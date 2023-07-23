@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ConflictIncidentResource\Pages;
 use App\Filament\Resources\ConflictIncidentResource\RelationManagers;
 use App\Models\ConflictIncident;
+use App\Models\IncidentType;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -12,6 +14,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ConflictIncidentResource extends Resource
 {
@@ -21,11 +24,17 @@ class ConflictIncidentResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $user = Auth::user()->pluck('name', 'id');
+        // dd($user);
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('user_id')
+            ->schema(
+                [
+                Forms\Components\Select::make('user_id')
+                    ->label('Reported by')
+                    ->relationship('user', 'name')
                     ->required(),
-                Forms\Components\TextInput::make('verified_by'),
+                Forms\Components\Select::make('verified_by')
+                    ->options(User::all()->pluck('name', 'id')),
                 Forms\Components\TextInput::make('conservation_area')
                     ->required()
                     ->maxLength(255),
@@ -42,9 +51,9 @@ class ConflictIncidentResource extends Resource
                 Forms\Components\TextInput::make('serial_number'),
                 Forms\Components\DatePicker::make('incident_date')
                     ->required(),
-                Forms\Components\TextInput::make('incident_type')
+                Forms\Components\Select::make('incident_type')
                     ->required()
-                    ->maxLength(255),
+                    ->options(IncidentType::all()->pluck('name', 'code')),
                 Forms\Components\TextInput::make('affected_area')
                     ->required()
                     ->maxLength(255),
@@ -66,13 +75,15 @@ class ConflictIncidentResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('y_coordinate')
                     ->maxLength(255),
-            ]);
+                ]
+            );
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
+            ->columns(
+                [
                 Tables\Columns\TextColumn::make('user_id'),
                 Tables\Columns\TextColumn::make('verified_by'),
                 Tables\Columns\TextColumn::make('conservation_area'),
@@ -98,16 +109,23 @@ class ConflictIncidentResource extends Resource
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime(),
-            ])
-            ->filters([
+                ]
+            )
+            ->filters(
+                [
                 //
-            ])
-            ->actions([
+                ]
+            )
+            ->actions(
+                [
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
+                ]
+            )
+            ->bulkActions(
+                [
                 Tables\Actions\DeleteBulkAction::make(),
-            ]);
+                ]
+            );
     }
     
     public static function getRelations(): array

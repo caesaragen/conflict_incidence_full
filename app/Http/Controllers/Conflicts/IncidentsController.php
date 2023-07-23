@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ConflictIncident;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class IncidentsController extends Controller
 {
@@ -75,5 +76,15 @@ class IncidentsController extends Controller
         );
     
         return response()->json(['message' => 'Conflict incident verified successfully.', 'data' => $incident]);
+    }
+
+     /**
+     * Method to show conflict incidents on the dashboard
+     */
+    public function dashboard(): View
+    {
+        $incidents = ConflictIncident::all();
+        // dd($incidents);
+        return view('dashboard', ['incidents' => $incidents]);
     }
 }
