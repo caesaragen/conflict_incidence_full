@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Conflicts;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IncidentRequest;
 use App\Models\ConflictIncident;
+use App\Models\IncidentType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Database\QueryException;
 
 class IncidentsController extends Controller
 {
@@ -24,37 +27,59 @@ class IncidentsController extends Controller
         /**
          * Method to store a new conflict incident 
          */ 
-    public function store(Request $request)
+    public function store(IncidentRequest $request)
     {
-        $validatedData = $request->validate(
-            [
-            'conservation_area' => 'required|string|max:255',
-            'station' => 'required|string|max:255',
-            'outpost' => 'required|string|max:255',
-            'reporting_date_from' => 'required|date',
-            'reporting_date_to' => 'required|date|after_or_equal:reporting_date_from',
-            'serial_number' => 'nullable|integer',
-            'incident_date' => 'required|date',
-            'incident_type' => 'required|string|max:255',
-            'affected_area' => 'required|string|max:255',
-            'gps_area' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'animal_responsible' => 'required|string|max:255',
-            'action_taken' => 'required|string|max:255',
-            'kws_ob_number' => 'nullable|string|max:255',
-            'x_coordinate' => 'nullable|string|max:255',
-            'y_coordinate' => 'nullable|string|max:255',
-            ]
-        );
+        // dd($request->all());
+
+            $conservation_area = $request->input('conservation_area');
+            $station = $request->input('station');
+            $outpost = $request->input('outpost');
+            $reporting_date_from = $request->input('reporting_date_from');
+            $reporting_date_to = $request->input('reporting_date_to');
+            $incident_type = $request->input('incident_type');
+            $affected = $request->input('affected');
+            $area = $request->input('area');
+            $location = $request->input('location');
+            $animal_responsible = $request->input('animal_responsible');
+            $action_taken = $request->input('action_taken');
+            $kws_ob_number = $request->input('kws_ob_number');
+            $x_coordinate = $request->input('x_coordinate');
+            $y_coordinate = $request->input('y_coordinate');
+        
+            // Add the authenticated user's ID as the user_id for the incident report
+            $user_id = Auth::id();
+            // Generate the serial number with the prefix "INC001"
+            $latestIncident = ConflictIncident::latest()->first();
+            $lastSerialNumber = $latestIncident ? (int)substr($latestIncident->serial_number, 3) : 0;
+            $nextSerialNumber = $lastSerialNumber + 1;
+            $serial_number = 'INC' . str_pad($nextSerialNumber, 3, '0', STR_PAD_LEFT);
         
     
-        // Add the authenticated user's ID as the user_id for the incident report
-        $validatedData['user_id'] = Auth::id();
-        dd($validatedData);
+            $incident = ConflictIncident::create(
+                [
+                'user_id' => $user_id,
+                'conservation_area' => $conservation_area,
+                'station' => $station,
+                'outpost' => $outpost,
+                'reporting_date_from' => $reporting_date_from,
+                'reporting_date_to' => $reporting_date_to,
+                'incident_type' => $incident_type,
+                'affected' => $affected,
+                'area' => $area,
+                'location' => $location,
+                'animal_responsible' => $animal_responsible,
+                'action_taken' => $action_taken,
+                'kws_ob_number' => $kws_ob_number,
+                'x_coordinate' => $x_coordinate,
+                'y_coordinate' => $y_coordinate,
+                'serial_number' => $serial_number,
+                ]
+            );
+            // dd($incident);
+            $incident ->save();
     
-        $incident = ConflictIncident::create($validatedData);
-    
-        return response()->json(['message' => 'Conflict incident created successfully.', 'data' => $incident]);
+            return redirect()->route('dashboard')->with('success', 'Conflict incident created successfully.');
+   
     }
     
         /** 
@@ -79,12 +104,13 @@ class IncidentsController extends Controller
     }
 
      /**
-     * Method to show conflict incidents on the dashboard
-     */
+      * Method to show conflict incidents on the dashboard
+      */
     public function dashboard(): View
     {
         $incidents = ConflictIncident::all();
+        $incidentTypes = IncidentType::all();
         // dd($incidents);
-        return view('dashboard', ['incidents' => $incidents]);
+        return view('dashboard', compact('incidents', 'incidentTypes'));
     }
 }

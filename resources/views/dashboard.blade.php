@@ -9,11 +9,21 @@
         <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    
-                    <x-secondary-button class="p-2" x-data="" x-on:click.prevent=""
-                        data-modal-toggle="default-modal">
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <x-secondary-button class="p-2" x-data=""  x-on:click.prevent="$dispatch('open-modal', 'incident-report-modal')"
+                        data-modal-toggle="incident-report-modal">
                         {{ __('Report an Incident') }}</x-secondary-button>
-                   
+
                     <div class="max-w-2xl mx-auto">
 
                         <table id="conflict-incidents-table">
@@ -35,7 +45,7 @@
                                     <th>KWS OB NO</th>
                                     <th>X-Coordinates</th>
                                     <th>Y-Coordinates</th>
-                                 
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,7 +74,7 @@
                         <!-- Main modal -->
 
                         @include('components.incident-report-modal')
-
+                       
                     </div>
 
                 </div>

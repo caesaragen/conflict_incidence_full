@@ -38,7 +38,7 @@ class ConflictIncidentResource extends Resource
                 Forms\Components\TextInput::make('conservation_area')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('station')
+            Forms\Components\TextInput::make('station')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('outpost')
@@ -49,15 +49,13 @@ class ConflictIncidentResource extends Resource
                 Forms\Components\DatePicker::make('reporting_date_to')
                     ->required(),
                 Forms\Components\TextInput::make('serial_number'),
-                Forms\Components\DatePicker::make('incident_date')
-                    ->required(),
                 Forms\Components\Select::make('incident_type')
                     ->required()
                     ->options(IncidentType::all()->pluck('name', 'code')),
-                Forms\Components\TextInput::make('affected_area')
+                Forms\Components\TextInput::make('affected')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('gps_area')
+                Forms\Components\TextInput::make('area')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('location')
@@ -84,7 +82,8 @@ class ConflictIncidentResource extends Resource
         return $table
             ->columns(
                 [
-                Tables\Columns\TextColumn::make('user_id'),
+                Tables\Columns\TextColumn::make('user.name')
+                ->label('Reported by'),
                 Tables\Columns\TextColumn::make('verified_by'),
                 Tables\Columns\TextColumn::make('conservation_area'),
                 Tables\Columns\TextColumn::make('station'),
@@ -94,11 +93,9 @@ class ConflictIncidentResource extends Resource
                 Tables\Columns\TextColumn::make('reporting_date_to')
                     ->date(),
                 Tables\Columns\TextColumn::make('serial_number'),
-                Tables\Columns\TextColumn::make('incident_date')
-                    ->date(),
                 Tables\Columns\TextColumn::make('incident_type'),
-                Tables\Columns\TextColumn::make('affected_area'),
-                Tables\Columns\TextColumn::make('gps_area'),
+                Tables\Columns\TextColumn::make('affected'),
+                Tables\Columns\TextColumn::make('area'),
                 Tables\Columns\TextColumn::make('location'),
                 Tables\Columns\TextColumn::make('animal_responsible'),
                 Tables\Columns\TextColumn::make('action_taken'),

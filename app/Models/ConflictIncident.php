@@ -9,7 +9,25 @@ class ConflictIncident extends Model
 {
     use HasFactory;
     
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'conservation_area',
+        'station',
+        'outpost',
+        'reporting_date_from',
+        'reporting_date_to',
+        'incident_type',
+        'affected',
+        'area',
+        'location',
+        'animal_responsible',
+        'action_taken',
+        'kws_ob_number',
+        'x_coordinate',
+        'y_coordinate',
+        'serial_number',
+    ];
+    
 
         /**
          * Relationship with the user who created the report
