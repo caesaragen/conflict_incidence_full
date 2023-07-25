@@ -35,10 +35,7 @@
                 <div class="mx-auto w-full ">
              
                     <div class="flex flex-col">
-                        <h2 class="dark:text-white dark:text-4xl dark:font-bold text-white text-4xl font-bold  z-10">Human Wildlife Conflict Incidence Report</h2>
-                            <div class="text-white text-4xl font-bold z-10">
-                             
-                            </div>
+                        <h2 class="dark:text-white dark:text-8xl dark:font-bold text-white text-8xl font-extrabold  z-10">Human Wildlife Conflict Incidence Report</h2>
                             </div>
                 </div>
             </div>

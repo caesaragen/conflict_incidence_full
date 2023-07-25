@@ -109,10 +109,11 @@ class IncidentsController extends Controller
       */
     public function dashboard(Request $request)
     {
-        $incidents = ConflictIncident::all();
+        $user_id = Auth::id();
+        $incidents = ConflictIncident::where('user_id', $user_id)->get();
         $incidentTypes = IncidentType::all();
         if ($request->ajax()) {
-            $data = ConflictIncident::select('*');
+            $data = ConflictIncident::select('*')->where('user_id', $user_id);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn(
@@ -124,6 +125,11 @@ class IncidentsController extends Controller
                 ->addColumn(
                     'incident_type_name', function ($row) {
                         return $row->incidentType->name; // Assuming 'incidentType' is the relationship name and 'name' is the column for the incident type name
+                    }
+                )
+                ->addColumn(
+                    'reported_by', function ($row) {
+                        return $row->user->name; 
                     }
                 )
                 ->addColumn(

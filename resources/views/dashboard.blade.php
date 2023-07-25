@@ -14,22 +14,18 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
 
-                    <x-secondary-button class="p-2" x-data=""  x-on:click.prevent="$dispatch('open-modal', 'incident-report-modal')"
+                    <x-action-button class="p-2" x-data=""  x-on:click.prevent="$dispatch('open-modal', 'incident-report-modal')"
                         data-modal-toggle="incident-report-modal">
-                        {{ __('Report an Incident') }}</x-secondary-button>
+                        {{ __('Report an Incident') }}</x-action-button>
 
                     <div class="max-w-2xl mx-auto">
 
-                        <table class="table table-bordered data-table">
+                        <table class="table table-bordered data-table p-2">
                             <thead>
                                 <tr>
                                     <th>Date</th>
+                                    <th>Reported by</th>
                                     <th>Incident Type</th>
                                     <th>Affected Area</th>
                                     <th>Location</th>
@@ -72,6 +68,7 @@
           ajax: "{{ route('dashboard') }}",
           columns: [
               {data: 'created_at', name: 'created_at'},
+              {data: 'reported_by', name: 'reported_by'},
               {data: 'incident_type_name', name: 'incident_type_name'},
               {data: 'affected', name: 'affected'},
               {data: 'location', name: 'location'},
