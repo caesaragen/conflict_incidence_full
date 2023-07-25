@@ -9,7 +9,8 @@ use App\Models\IncidentType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Illuminate\Database\QueryException;
+use Yajra\DataTables\DataTables;
+use Carbon\Carbon;
 
 class IncidentsController extends Controller
 {
@@ -106,11 +107,36 @@ class IncidentsController extends Controller
      /**
       * Method to show conflict incidents on the dashboard
       */
-    public function dashboard(): View
+    public function dashboard(Request $request)
     {
         $incidents = ConflictIncident::all();
         $incidentTypes = IncidentType::all();
-        // dd($incidents);
+        if ($request->ajax()) {
+            $data = ConflictIncident::select('*');
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn(
+                    'created_at', function ($row) {
+                        // Format the 'created_at' date using Carbon
+                        return Carbon::parse($row->created_at)->format('Y-m-d');
+                    }
+                )
+                ->addColumn(
+                    'incident_type_name', function ($row) {
+                        return $row->incidentType->name; // Assuming 'incidentType' is the relationship name and 'name' is the column for the incident type name
+                    }
+                )
+                ->addColumn(
+                    'action', function ($row) {
+       
+                            $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+      
+                            return $btn;
+                    }
+                )
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
         return view('dashboard', compact('incidents', 'incidentTypes'));
     }
 }

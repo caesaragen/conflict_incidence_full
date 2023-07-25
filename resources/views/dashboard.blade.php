@@ -26,7 +26,7 @@
 
                     <div class="max-w-2xl mx-auto">
 
-                        <table id="conflict-incidents-table">
+                        <table class="table table-bordered data-table">
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -45,30 +45,10 @@
                                     <th>KWS OB NO</th>
                                     <th>X-Coordinates</th>
                                     <th>Y-Coordinates</th>
-
+                                    {{-- <th width="100px">Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($incidents as $incident)
-                                    <tr>
-                                        <td>{{ $incident->incident_date }}</td>
-                                        <td>{{ $incident->incident_type }}</td>
-                                        <td>{{ $incident->affected_area }}</td>
-                                        <td>{{ $incident->location }}</td>
-                                        <td>{{ $incident->conservation_area }}</td>
-                                        <td>{{ $incident->station }}</td>
-                                        <td>{{ $incident->outpost }}</td>
-                                        <td>{{ $incident->reporting_date_from }}</td>
-                                        <td>{{ $incident->reporting_date_to }}</td>
-                                        <td>{{ $incident->serial_number }}</td>
-                                        <td>{{ $incident->gps_area }}</td>
-                                        <td>{{ $incident->animal_responsible }}</td>
-                                        <td>{{ $incident->action_taken }}</td>
-                                        <td>{{ $incident->kws_ob_number }}</td>
-                                        <td>{{ $incident->x_coordinate }}</td>
-                                        <td>{{ $incident->y_coordinate }}</td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                         <!-- Main modal -->
@@ -82,12 +62,34 @@
         </div>
     </div>
 </x-app-layout>
-{{-- @section('scripts')
-    <script>
-        // Use Highcharts Data Table module
-        Highcharts.dataTable({
-            table: 'conflict-incidents-table',
-            // Additional configurations if needed
-        });
-    </script>
-@endsection --}}
+<script type="text/javascript">
+    $(function () {
+        
+      var table = $('.data-table').DataTable({
+          processing: true,
+          serverSide: true,
+          responsive: true,
+          ajax: "{{ route('dashboard') }}",
+          columns: [
+              {data: 'created_at', name: 'created_at'},
+              {data: 'incident_type_name', name: 'incident_type_name'},
+              {data: 'affected', name: 'affected'},
+              {data: 'location', name: 'location'},
+              {data: 'conservation_area', name: 'conservation_area'},
+              {data: 'station', name: 'station'},
+              {data: 'outpost', name: 'outpost'},
+              {data: 'reporting_date_from', name: 'reporting_date_from'},
+              {data: 'reporting_date_to', name: 'reporting_date_to'},
+              {data: 'serial_number', name: 'serial_number'},
+              {data: 'area', name: 'area'},
+              {data: 'animal_responsible', name: 'animal_responsible'},
+              {data: 'action_taken', name: 'action_taken'},
+              {data: 'kws_ob_number', name: 'kws_ob_number'},
+              {data: 'x_coordinate', name: 'x_coordinate'},
+              {data: 'y_coordinate', name: 'y_coordinate'},
+            //   {data: 'action', name: 'action', orderable: false, searchable: false},
+          ]
+      });
+        
+    });
+  </script>
